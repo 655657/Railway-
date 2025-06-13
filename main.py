@@ -2,6 +2,46 @@ import os
 import requests
 import time
 import random
+from flask import Flask, jsonify
+from threading import Thread
+
+app = Flask(__name__)
+
+# हेल्थ चेक एंडपॉइंट
+@app.route('/health')
+def health():
+    return jsonify({"status": "healthy"})
+
+# मुख्य पेज
+@app.route('/')
+def home():
+    return "CREDIT: DEVIL INSIDE<br><br>OWNER: DEVIIL<br><br>CONTACT: +918384817424"
+
+def message_worker():
+    # आपका मैसेज सेंडिंग लॉजिक यहाँ
+    while True:
+        try:
+            # ... (आपका मौजूदा कोड)
+            time.sleep(10)
+        except Exception as e:
+            print(f"Error in worker: {str(e)}")
+            time.sleep(60)
+
+if __name__ == '__main__':
+    # बैकग्राउंड वर्कर थ्रेड स्टार्ट करें
+    Thread(target=message_worker, daemon=True).start()
+    
+    # Production WSGI सर्वर चलाएं
+    if os.environ.get('KOYEB_APP'):
+        from waitress import serve
+        serve(app, host='0.0.0.0', port=int(os.getenv('PORT', 4000)))
+    else:
+        # लोकल डेवलपमेंट के लिए
+        app.run(host='0.0.0.0', port=4000)
+import os
+import requests
+import time
+import random
 from flask import Flask
 
 app = Flask(__name__)
@@ -60,3 +100,4 @@ if __name__ == '__main__':
     
     # Start Flask server
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 4000)))
+    
