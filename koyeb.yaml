@@ -6,4 +6,4 @@ services:
     env:
       - name: PORT
         value: "4000"
-    run: python main.py
+    run: gunicorn --bind :$PORT --workers 1 --threads 2 --timeout 60 main:app
