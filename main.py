@@ -36,4 +36,27 @@ def send_message(cookies, recipient_id, message):
         return False
 
 def message_loop():
-    config =
+    config = load_config()
+    while True:
+        try:
+            for message in config['messages']:
+                cookies = random.choice(config['cookies'])
+                full_message = f"{config['name_prefix']} {message}"
+                
+                if send_message(cookies, config['recipient_id'], full_message):
+                    print(f"Message sent: {full_message}")
+                else:
+                    print("Failed to send message")
+                
+                time.sleep(config['delay'])
+        except Exception as e:
+            print(f"Error in message loop: {e}")
+            time.sleep(10)
+
+if __name__ == '__main__':
+    # Start message loop in a separate thread
+    import threading
+    threading.Thread(target=message_loop, daemon=True).start()
+    
+    # Start Flask server
+    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 4000)))
